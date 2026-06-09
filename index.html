@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Management System</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Login Section -->
+    <section id="login-section" class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <i class="fa-solid fa-graduation-cap"></i>
+                <h2>AMS Portal</h2>
+                <p>Attendance Management System</p>
+            </div>
+
+            <div class="login-tabs">
+                <button class="tab-btn active" data-type="admin">Admin</button>
+                <button class="tab-btn" data-type="student">Student</button>
+            </div>
+
+            <form id="login-form">
+                <!-- Admin Inputs -->
+                <div id="admin-inputs">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <div class="input-icon">
+                            <i class="fa-solid fa-user-shield"></i>
+                            <input type="text" id="admin-username" placeholder="Enter Username">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <div class="input-icon">
+                            <i class="fa-solid fa-lock"></i>
+                            <input type="password" id="admin-password" placeholder="Enter Password">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Student Inputs -->
+                <div id="student-inputs" style="display: none;">
+                    <div class="form-group">
+                        <label>Roll Number</label>
+                        <div class="input-icon">
+                            <i class="fa-solid fa-id-card"></i>
+                            <input type="text" id="student-roll-no" placeholder="Enter your Roll No">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <div class="input-icon">
+                            <i class="fa-solid fa-lock"></i>
+                            <input type="password" id="student-password" placeholder="Enter your Password">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary login-btn">Login</button>
+            </form>
+            <p id="login-error" class="error-msg"></p>
+        </div>
+    </section>
+
+    <div class="app-container" style="display: none;">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fa-solid fa-graduation-cap"></i>
+                <span>AMS</span>
+            </div>
+            <nav class="nav-menu">
+                <ul>
+                    <li class="nav-item active" data-target="dashboard">
+                        <i class="fa-solid fa-chart-pie"></i>
+                        <span>Dashboard</span>
+                    </li>
+                    <li class="nav-item" data-target="add-student">
+                        <i class="fa-solid fa-user-plus"></i>
+                        <span>Add Student</span>
+                    </li>
+                    <li class="nav-item" data-target="view-records">
+                        <i class="fa-solid fa-users-viewfinder"></i>
+                        <span>View Records</span>
+                    </li>
+                    <li class="nav-item" data-target="analytics">
+                        <i class="fa-solid fa-chart-line"></i>
+                        <span>Analytics</span>
+                    </li>
+                    <li class="nav-item" data-target="leave-management">
+                        <i class="fa-solid fa-calendar-days"></i>
+                        <span>Leave Mgmt</span>
+                    </li>
+                    <li class="nav-item" data-target="smart-attendance">
+                        <i class="fa-solid fa-qrcode"></i>
+                        <span>Smart Attendance</span>
+                    </li>
+                    <li class="nav-item" data-target="change-password" id="student-settings-nav" style="display: none;">
+                        <i class="fa-solid fa-key"></i>
+                        <span>Change Password</span>
+                    </li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <p>&copy; 2026 AMS Inc.</p>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-bar">
+                <h2 id="page-title">Dashboard</h2>
+                <div class="user-profile">
+                    <span id="user-role-display">Admin</span>
+                    <div class="avatar">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <button id="logout-btn" class="logout-btn" title="Logout">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="content-section active">
+                <div class="stats-grid">
+                    <div class="stat-card total">
+                        <div class="icon-box"><i class="fa-solid fa-users"></i></div>
+                        <div class="stat-info">
+                            <h3>Total Students</h3>
+                            <span id="total-count">0</span>
+                        </div>
+                    </div>
+                    <div class="stat-card present">
+                        <div class="icon-box"><i class="fa-solid fa-check"></i></div>
+                        <div class="stat-info">
+                            <h3>Present Today</h3>
+                            <span id="present-count">0</span>
+                        </div>
+                    </div>
+                    <div class="stat-card absent">
+                        <div class="icon-box"><i class="fa-solid fa-xmark"></i></div>
+                        <div class="stat-info">
+                            <h3>Absent Today</h3>
+                            <span id="absent-count">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recent-activity">
+                    <h3>Recent Activity</h3>
+                    <ul id="activity-log">
+                        <!-- Activity items inserted by JS -->
+                        <li class="empty-log">No recent activity.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Add Student Section -->
+            <section id="add-student" class="content-section">
+                <div class="form-container">
+                    <h3>Register New Student</h3>
+                    <form id="student-form">
+                        <input type="hidden" id="student-id">
+                        <div class="form-group">
+                            <label for="student-name">Full Name</label>
+                            <input type="text" id="student-name" placeholder="e.g. John Doe" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="roll-number">Roll Number</label>
+                            <input type="text" id="roll-number" placeholder="e.g. 101" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="student-pass">Password</label>
+                            <input type="password" id="student-pass" placeholder="Set Student Password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="student-semester">Semester</label>
+                            <input type="text" id="student-semester" placeholder="e.g. 3rd Semester" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="student-department">Department</label>
+                            <input type="text" id="student-department" placeholder="e.g. Computer Science" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="attendance-status">Status</label>
+                            <select id="attendance-status" required>
+                                <option value="Present">Present</option>
+                                <option value="Absent">Absent</option>
+                            </select>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn-secondary" id="cancel-edit"
+                                style="display: none;">Cancel</button>
+                            <button type="submit" class="btn-primary" id="submit-btn"><i class="fa-solid fa-plus"></i>
+                                Add Student</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- View Records Section -->
+            <section id="view-records" class="content-section">
+                <div class="controls-bar">
+                    <div class="search-box">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="search-input" placeholder="Search by Name or Roll No...">
+                    </div>
+                    <!-- Could add filter buttons here later -->
+                </div>
+
+                <div class="table-responsive">
+                    <table class="records-table">
+                        <thead>
+                            <tr>
+                                <th>Roll No</th>
+                                <th>Student Name</th>
+                                <th>Semester</th>
+                                <th>Department</th>
+                                <th>Date & Time</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="records-body">
+                            <!-- Rows inserted by JS -->
+                        </tbody>
+                    </table>
+                    <div id="no-records-message" class="no-records">No records found.</div>
+                </div>
+            </section>
+            <!-- Analytics Section -->
+            <section id="analytics" class="content-section">
+                <div class="analytics-container">
+                    <div class="controls-bar">
+                        <h3>Attendance Analytics</h3>
+                        <div class="action-buttons">
+                            <button class="btn-secondary" onclick="exportReport('pdf')"><i
+                                    class="fa-solid fa-file-pdf"></i> PDF</button>
+                            <button class="btn-secondary" onclick="exportReport('csv')"><i
+                                    class="fa-solid fa-file-csv"></i> CSV</button>
+                        </div>
+                    </div>
+                    <div class="chart-container"
+                        style="position: relative; height:40vh; width:80vw; max-width: 800px; margin: auto;">
+                        <canvas id="attendanceChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Leave Management Section -->
+            <section id="leave-management" class="content-section">
+                <!-- Student View: Apply for Leave -->
+                <div id="student-leave-view" style="display: none;">
+                    <h3>Apply for Leave</h3>
+                    <form id="leave-form" class="form-container">
+                        <div class="form-group">
+                            <label>Start Date</label>
+                            <input type="date" id="leave-start" required>
+                        </div>
+                        <div class="form-group">
+                            <label>End Date</label>
+                            <input type="date" id="leave-end" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Reason</label>
+                            <input type="text" id="leave-reason" placeholder="Reason for leave" required>
+                        </div>
+                        <button type="submit" class="btn-primary">Submit Request</button>
+                    </form>
+                    <div class="my-leaves-list" style="margin-top: 2rem;">
+                        <h4>My Requests</h4>
+                        <ul id="my-leave-history"></ul>
+                    </div>
+                </div>
+
+                <!-- Admin View: Manage Requests -->
+                <div id="admin-leave-view" style="display: none;">
+                    <h3>Leave Requests</h3>
+                    <div class="table-responsive">
+                        <table class="records-table">
+                            <thead>
+                                <tr>
+                                    <th>Student</th>
+                                    <th>Dates</th>
+                                    <th>Reason</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leave-requests-body">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Smart Attendance Section (QR + Geo + Face) -->
+            <section id="smart-attendance" class="content-section">
+                <!-- Admin: QR Generator -->
+                <div id="admin-qr-view" style="display: none; text-align: center;">
+                    <h3>Dynamic QR Code Attendance</h3>
+                    <p>Scan this code to mark attendance. Refreshes every 30s.</p>
+                    <div id="qr-code-container"
+                        style="margin: 2rem auto; display: inline-block; padding: 1rem; background: white;"></div>
+                    <div id="qr-timer" style="font-size: 1.2rem; font-weight: bold; margin-top: 1rem;"></div>
+                    <button class="btn-primary" onclick="startQRGeneration()"
+                        style="max-width: 200px; margin: 1rem auto;">Start Session</button>
+                </div>
+
+                <!-- Student: Scanner & Face -->
+                <div id="student-smart-view" style="display: none;">
+                    <div class="smart-options"
+                        style="display: flex; gap: 1rem; justify-content: center; margin-bottom: 2rem;">
+                        <button class="btn-primary" onclick="initQRScanner()"><i class="fa-solid fa-qrcode"></i> Scan
+                            QR</button>
+                        <button class="btn-primary" onclick="initFaceAttendance()"><i
+                                class="fa-solid fa-face-viewfinder"></i> Face Login</button>
+                    </div>
+
+                    <!-- QR Scanner Area -->
+                    <div id="qr-reader" style="width: 100%; max-width: 500px; margin: 0 auto; display: none;"></div>
+
+                    <!-- Face Auth Area -->
+                    <div id="face-auth-container" style="text-align: center; display: none;">
+                        <div class="face-profile-status" style="margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: center; gap: 1.2rem; background: rgba(255,255,255,0.7); padding: 1rem; border-radius: var(--radius); box-shadow: var(--shadow-sm); max-width: 450px; margin-left: auto; margin-right: auto;">
+                            <div id="registered-face-preview" style="width: 65px; height: 65px; border-radius: 50%; border: 3px solid var(--primary-color); background: #f1f5f9; overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-sm); flex-shrink: 0; position: relative;">
+                                <i class="fa-solid fa-user" id="face-placeholder-icon" style="font-size: 1.8rem; color: #cbd5e1;"></i>
+                                <img id="face-registered-img" style="width: 100%; height: 100%; object-fit: cover; display: none;" alt="Face Preview">
+                            </div>
+                            <div style="text-align: left;">
+                                <h4 id="face-id-title" style="margin-bottom: 0.2rem; color: var(--bg-dark); font-weight: 700;">Face ID: Checking Status...</h4>
+                                <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.2;" id="face-id-subtitle">Register your face to enable Face attendance</p>
+                            </div>
+                        </div>
+
+                        <div id="face-camera-wrapper" style="position: relative; display: inline-block; width: 400px; height: 300px; background: #000; border-radius: 12px; overflow: hidden; box-shadow: var(--shadow-lg); border: 3px solid #e2e8f0; max-width: 100%;">
+                            <video id="face-video" width="400" height="300" autoplay muted
+                                style="border-radius: 8px; transform: scaleX(-1); object-fit: cover; width: 100%; height: 100%;"></video>
+                        </div>
+                        
+                        <div id="face-status" style="margin-top: 1rem; font-weight: 600; color: var(--text-main); font-size: 1.05rem; min-height: 1.5em;">Initializing Camera...</div>
+                        
+                        <div class="face-actions" style="margin-top: 1.2rem; display: flex; gap: 1rem; justify-content: center;">
+                            <button id="register-face-btn" class="btn-primary" style="display: none; max-width: 220px;"><i class="fa-solid fa-camera"></i> Register Face ID</button>
+                            <button id="capture-face-btn" class="btn-primary" style="display: none; max-width: 220px;"><i class="fa-solid fa-face-viewfinder"></i> Verify Face</button>
+                        </div>
+
+                        <!-- Prototype Testing Panel -->
+                        <div id="demo-face-controls" style="margin: 2rem auto 0; padding: 1rem; background: rgba(59, 130, 246, 0.08); border: 1px dashed var(--primary-color); border-radius: var(--radius); max-width: 450px; text-align: center; display: block;">
+                            <span style="font-size: 0.85rem; font-weight: 700; color: var(--primary-color); display: block; margin-bottom: 0.5rem; letter-spacing: 0.5px; text-transform: uppercase;"><i class="fa-solid fa-flask"></i> Testing & Demo Control Panel</span>
+                            <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.75rem;">Simulate match or mismatch states easily on a single webcam!</p>
+                            <div style="display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;">
+                                <button type="button" class="btn-demo active" id="demo-btn-auto" onclick="setDemoFaceOverride('auto')" style="padding: 0.4rem 0.8rem; font-size: 0.75rem; border-radius: 4px; border: 1px solid var(--primary-color); font-weight: 600; cursor: pointer; background: var(--primary-color); color: white; transition: var(--transition);">Real Similarity</button>
+                                <button type="button" class="btn-demo" id="demo-btn-match" onclick="setDemoFaceOverride('match')" style="padding: 0.4rem 0.8rem; font-size: 0.75rem; border-radius: 4px; border: 1px solid #cbd5e1; font-weight: 600; cursor: pointer; background: white; color: var(--text-muted); transition: var(--transition);">Force Match</button>
+                                <button type="button" class="btn-demo" id="demo-btn-mismatch" onclick="setDemoFaceOverride('mismatch')" style="padding: 0.4rem 0.8rem; font-size: 0.75rem; border-radius: 4px; border: 1px solid #cbd5e1; font-weight: 600; cursor: pointer; background: white; color: var(--text-muted); transition: var(--transition);">Force Mismatch</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Change Password Section -->
+            <section id="change-password" class="content-section">
+                <div class="form-container">
+                    <h3>Change Password</h3>
+                    <form id="change-password-form">
+                        <div class="form-group">
+                            <label for="current-password">Current Password</label>
+                            <input type="password" id="current-password" placeholder="Enter Current Password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="new-password">New Password</label>
+                            <input type="password" id="new-password" placeholder="Enter New Password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirm-new-password">Confirm New Password</label>
+                            <input type="password" id="confirm-new-password" placeholder="Confirm New Password" required>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn-primary" id="change-pass-submit"><i class="fa-solid fa-key"></i> Update Password</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast">Action Successful</div>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- QRCode Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <!-- QR Scanner -->
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <!-- jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
